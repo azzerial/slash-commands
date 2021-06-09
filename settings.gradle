@@ -1,0 +1,4 @@
+rootProject.name = 'slash-commands'
+
+include ('api')
+include ('playground')
