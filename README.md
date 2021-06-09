@@ -3,7 +3,7 @@
   <img src="assets/icon.svg" alt="Slash Command icon" width="256">
   <br>
   <br>
-  <b style="font-size:32px;">Slash Commands</b>
+  <h1>Slash Commands</h1>
   <h4>An open source utility library for <a href="https://github.com/DV8FromTheWorld/JDA" target="_blank">JDA</a> to simplify the use of <a href="https://discord.com/developers/docs/interactions/slash-commands" target="_blank">Discord Slash Commands</a></h4>
 </div>
 <p align="center">
