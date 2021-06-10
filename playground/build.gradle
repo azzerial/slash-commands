@@ -33,8 +33,10 @@ java {
 tasks.named('run') {
     if (file('.env').exists()) {
         file('.env').eachLine {
-            def (key, value) = it.tokenize('=')
-            environment(key, value)
+            if (it.matches('[^#][^=]+=.*')) {
+                def (key, value) = it.tokenize('=')
+                environment(key, value)
+            }
         }
     }
 }
