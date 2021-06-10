@@ -19,19 +19,15 @@ package com.github.azzerial.slash.annotations;
 import java.lang.annotation.*;
 
 /**
- * This annotation represents a Slash Command option.
+ * This annotation represents a choice of a Slash Command option.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface Option {
+public @interface Choice {
 
-    /** The name of the option, must match {@code [a-z0-9-]{1,32}}.*/
+    /** The name of the choice, cannot be empty or longer than {@code 100} characters.*/
     String name();
-    /** The description of the option, cannot be empty or longer than {@code 100} characters.*/
-    String description();
-    /** The requirement of this option, whether the option is required or optional. */
-    boolean required() default false;
-    /** The choices list of the option. */
-    Choice[] choices() default {};
+    /** The value of the choice, either an {@code int} or a {@code String}. In the case the value is a {@code String}, it cannot be empty or longer than {@code 100} characters.*/
+    String value();
 }
