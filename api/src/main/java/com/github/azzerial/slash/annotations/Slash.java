@@ -38,6 +38,8 @@ public @interface Slash {
         String name();
         /** The description of the Slash Command, cannot be empty or longer than {@code 100} characters.*/
         String description();
+        /** The option list of the Slash Command. */
+        Option[] options() default {};
         /** The default permission of the Slash Command, whether the command is enabled by default when the app is added to a guild. */
         boolean enabled() default true;
     }
