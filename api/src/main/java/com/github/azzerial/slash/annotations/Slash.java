@@ -42,6 +42,8 @@ public @interface Slash {
         Option[] options() default {};
         /** The subcommand list of the Slash Command. */
         Subcommand[] subcommands() default {};
+        /** The subcommand group list of the Slash Command. */
+        SubcommandGroup[] subcommandGroups() default {};
         /** The default permission of the Slash Command, whether the command is enabled by default when the app is added to a guild. */
         boolean enabled() default true;
     }
