@@ -30,6 +30,8 @@ public @interface Option {
     String name();
     /** The description of the option, cannot be empty or longer than {@code 100} characters.*/
     String description();
+    /** The type of the option. */
+    OptionType type();
     /** The requirement of this option, whether the option is required or optional. */
     boolean required() default false;
     /** The choices list of the option. */
