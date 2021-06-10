@@ -40,6 +40,8 @@ public @interface Slash {
         String description();
         /** The option list of the Slash Command. */
         Option[] options() default {};
+        /** The subcommand list of the Slash Command. */
+        Subcommand[] subcommands() default {};
         /** The default permission of the Slash Command, whether the command is enabled by default when the app is added to a guild. */
         boolean enabled() default true;
     }
