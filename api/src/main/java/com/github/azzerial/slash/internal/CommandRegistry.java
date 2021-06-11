@@ -38,6 +38,12 @@ public final class CommandRegistry {
 
     /* Getters & Setters */
 
+    public SlashCommand getCommand(String tag) {
+        return registry.get(tag);
+    }
+
+    /* Methods */
+
     public SlashCommand registerCommand(Object o) {
         final SlashCommand command = compileCommand(o);
 

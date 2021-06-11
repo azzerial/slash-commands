@@ -16,15 +16,24 @@
 
 package com.github.azzerial.slash;
 
+import com.github.azzerial.slash.internal.CommandRegistry;
 import net.dv8tion.jda.api.JDA;
 
 public final class SlashClient {
 
     private final JDA jda;
+    private final CommandRegistry registry;
 
     /* Constructors */
 
-    SlashClient(JDA jda) {
+    SlashClient(JDA jda, CommandRegistry registry) {
         this.jda = jda;
+        this.registry = registry;
+    }
+
+    /* Methods */
+
+    public SlashCommand getCommand(String tag) {
+        return registry.getCommand(tag);
     }
 }

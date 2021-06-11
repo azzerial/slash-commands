@@ -58,6 +58,6 @@ public final class SlashClientBuilder {
     }
 
     public SlashClient build() {
-        return new SlashClient(jda);
+        return new SlashClient(jda, registry);
     }
 }
