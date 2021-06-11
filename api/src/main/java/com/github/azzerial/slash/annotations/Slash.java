@@ -49,6 +49,18 @@ public @interface Slash {
     }
 
     /**
+     * This annotation labels a method as a Slash Command button handler.
+     */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface Button {
+
+        /** The tag of the button. */
+        String value();
+    }
+
+    /**
      * This annotation labels a method as a Slash Command handler.
      */
     @Documented
