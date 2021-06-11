@@ -49,6 +49,20 @@ public @interface Slash {
     }
 
     /**
+     * This annotation labels a method as a Slash Command handler.
+     */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface Handler {
+
+        /**
+         * The path to the handler.
+         */
+        String value() default "";
+    }
+
+    /**
      * This annotations assigns an identification tag to a Slash Command for registration purposes.
      */
     @Documented
