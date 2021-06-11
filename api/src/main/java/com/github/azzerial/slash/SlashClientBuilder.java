@@ -20,10 +20,6 @@ import com.github.azzerial.slash.internal.CommandRegistry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.internal.utils.Checks;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 public final class SlashClientBuilder {
 
     private final JDA jda;
