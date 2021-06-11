@@ -47,4 +47,18 @@ public @interface Slash {
         /** The default permission of the Slash Command, whether the command is enabled by default when the app is added to a guild. */
         boolean enabled() default true;
     }
+
+    /**
+     * This annotations assigns an identification tag to a Slash Command for registration purposes.
+     */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @interface Tag {
+
+        /**
+         * The value of the tag.
+         */
+        String value();
+    }
 }
