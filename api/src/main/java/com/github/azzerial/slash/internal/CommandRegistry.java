@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +49,10 @@ public final class CommandRegistry {
             .filter(command -> command.getCommandIds().contains(id))
             .findFirst()
             .orElse(null);
+    }
+
+    public Collection<SlashCommand> getCommands() {
+        return registry.values();
     }
 
     /* Methods */

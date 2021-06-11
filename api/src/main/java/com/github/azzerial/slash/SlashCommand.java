@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 public final class SlashCommand {
 
-    private static final long GLOBAL = -1L;
+    public static final long GLOBAL = -1L;
 
     private final JDA jda;
     private final String tag;
@@ -59,6 +59,10 @@ public final class SlashCommand {
         return tag;
     }
 
+    public CommandData getData() {
+        return data;
+    }
+
     public Object getObjectInstance() {
         return obj;
     }
@@ -72,6 +76,10 @@ public final class SlashCommand {
 
     public Map<String, Method> getHandlers() {
         return handlers;
+    }
+
+    public synchronized void putCommand(long id, Command command) {
+        instances.put(id, new AtomicReference<>(command));
     }
 
     /* Methods */

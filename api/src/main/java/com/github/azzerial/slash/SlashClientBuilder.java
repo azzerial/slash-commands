@@ -18,12 +18,18 @@ package com.github.azzerial.slash;
 
 import com.github.azzerial.slash.internal.CommandRegistry;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.internal.utils.Checks;
+
+import java.util.Collection;
+import java.util.List;
 
 public final class SlashClientBuilder {
 
     private final JDA jda;
     private final CommandRegistry registry;
+
+    private boolean deleteUnregisteredCommands = false;
 
     /* Constructors */
 
@@ -53,7 +59,49 @@ public final class SlashClientBuilder {
         return this;
     }
 
+    public SlashClientBuilder deleteUnregisteredCommands(boolean enabled) {
+        this.deleteUnregisteredCommands = enabled;
+        return this;
+    }
+
     public SlashClient build() {
+        final Collection<SlashCommand> commands = registry.getCommands();
+
+        loadGlobalCommands(commands);
+        loadGuildCommands(commands);
         return new SlashClient(jda, registry);
+    }
+
+    /* Internal */
+
+    private void loadGlobalCommands(Collection<SlashCommand> commands) {
+        final List<Command> cmds = jda.retrieveCommands().complete();
+
+        for (SlashCommand command : commands) {
+            for (Command cmd : cmds) {
+                if (cmd.getName().equals(command.getData().getName())) {
+                    command.putCommand(SlashCommand.GLOBAL, cmd);
+                } else if (deleteUnregisteredCommands) {
+                    cmd.delete().queue();
+                }
+            }
+        }
+    }
+
+    private void loadGuildCommands(Collection<SlashCommand> commands) {
+        jda.getGuilds()
+            .forEach(guild -> {
+                final List<Command> cmds = guild.retrieveCommands().complete();
+
+                for (SlashCommand command : commands) {
+                    for (Command cmd : cmds) {
+                        if (cmd.getName().equals(command.getData().getName())) {
+                            command.putCommand(guild.getIdLong(), cmd);
+                        } else if (deleteUnregisteredCommands) {
+                            cmd.delete().queue();
+                        }
+                    }
+                }
+            });
     }
 }
