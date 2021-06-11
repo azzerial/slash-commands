@@ -59,7 +59,7 @@ public final class PingCommand {
         event.deferEdit()
             .flatMap(v -> {
                 final long latency = System.currentTimeMillis() - time;
-                final String ms = String.format("%3d", latency);
+                final String ms = Long.toUnsignedString(latency);
                 final MessageEmbed message = buildPingMessage(ms);
                 return event.getHook().editOriginalEmbeds(message);
             })
