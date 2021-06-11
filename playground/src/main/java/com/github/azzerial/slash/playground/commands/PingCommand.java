@@ -17,8 +17,10 @@
 package com.github.azzerial.slash.playground.commands;
 
 import com.github.azzerial.slash.annotations.Slash;
+import com.github.azzerial.slash.components.SlashButton;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 @Slash.Tag("ping")
@@ -38,9 +40,26 @@ public final class PingCommand {
 
         event.deferReply(true)
             .addEmbeds(initialMessage)
+            .addActionRow(
+                SlashButton.primary("ping.refresh", "Refresh")
+            )
             .flatMap(v -> {
                 final long latency = System.currentTimeMillis() - time;
                 final String ms = Long.toUnsignedString(latency);
+                final MessageEmbed message = buildPingMessage(ms);
+                return event.getHook().editOriginalEmbeds(message);
+            })
+            .queue();
+    }
+
+    @Slash.Button("ping.refresh")
+    public void onRefresh(ButtonClickEvent event) {
+        final long time = System.currentTimeMillis();
+
+        event.deferEdit()
+            .flatMap(v -> {
+                final long latency = System.currentTimeMillis() - time;
+                final String ms = String.format("%3d", latency);
                 final MessageEmbed message = buildPingMessage(ms);
                 return event.getHook().editOriginalEmbeds(message);
             })
