@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public final class SlashCommand {
 
@@ -38,15 +39,17 @@ public final class SlashCommand {
     private final JDA jda;
     private final String tag;
     private final CommandData data;
+    private final Object obj;
     private final Map<String, Method> handlers;
     private final Map<Long, AtomicReference<Command>> instances = new HashMap<>();
 
     /* Constructors */
 
-    public SlashCommand(JDA jda, String tag, CommandData data, Map<String, Method> handlers) {
+    public SlashCommand(JDA jda, String tag, CommandData data, Object obj, Map<String, Method> handlers) {
         this.jda = jda;
         this.tag = tag;
         this.data = data;
+        this.obj = obj;
         this.handlers = handlers;
     }
 
@@ -54,6 +57,21 @@ public final class SlashCommand {
 
     public String getTag() {
         return tag;
+    }
+
+    public Object getObjectInstance() {
+        return obj;
+    }
+
+    public List<Long> getCommandIds() {
+        return instances.values().stream()
+            .map(AtomicReference::get)
+            .map(Command::getIdLong)
+            .collect(Collectors.toList());
+    }
+
+    public Map<String, Method> getHandlers() {
+        return handlers;
     }
 
     /* Methods */

@@ -16,7 +16,12 @@
 
 package com.github.azzerial.slash.internal;
 
+import com.github.azzerial.slash.SlashCommand;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public final class InteractionListener extends ListenerAdapter {
 
@@ -26,5 +31,26 @@ public final class InteractionListener extends ListenerAdapter {
 
     public InteractionListener(CommandRegistry registry) {
         this.registry = registry;
+    }
+
+    /* Methods */
+
+    @Override
+    public void onSlashCommand(SlashCommandEvent event) {
+        if (event.getUser().isBot()) {
+            return;
+        }
+
+        final SlashCommand command = registry.getCommandById(event.getCommandIdLong());
+
+        if (command != null) {
+            final Method method = command.getHandlers().get(event.getCommandPath());
+
+            if (method != null) {
+                try {
+                    method.invoke(command.getObjectInstance(), event);
+                } catch (IllegalAccessException | InvocationTargetException ignored) {}
+            }
+        }
     }
 }

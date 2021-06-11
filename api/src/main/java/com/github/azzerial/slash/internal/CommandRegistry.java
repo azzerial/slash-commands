@@ -43,6 +43,13 @@ public final class CommandRegistry {
         return registry.get(tag);
     }
 
+    public SlashCommand getCommandById(long id) {
+        return registry.values().stream()
+            .filter(command -> command.getCommandIds().contains(id))
+            .findFirst()
+            .orElse(null);
+    }
+
     /* Methods */
 
     public SlashCommand registerCommand(Object obj) {
@@ -71,6 +78,6 @@ public final class CommandRegistry {
 
         final CommandData data = annotationCompiler.compileCommand(command);
         final Map<String, Method> handlers = annotationCompiler.compileHandlers(cls, data);
-        return new SlashCommand(jda, tag.value(), data, handlers);
+        return new SlashCommand(jda, tag.value(), data, obj, handlers);
     }
 }
