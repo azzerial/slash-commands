@@ -17,10 +17,42 @@
 package com.github.azzerial.slash.playground.commands;
 
 import com.github.azzerial.slash.annotations.Slash;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 @Slash.Tag("ping")
 @Slash.Command(
     name = "ping",
     description = "Check the current latency"
 )
-public final class PingCommand {}
+public final class PingCommand {
+
+    private final MessageEmbed initialMessage = buildPingMessage("...");
+
+    /* Methods */
+
+    @Slash.Handler
+    public void ping(SlashCommandEvent event) {
+        final long time = System.currentTimeMillis();
+
+        event.deferReply(true)
+            .addEmbeds(initialMessage)
+            .flatMap(v -> {
+                final long latency = System.currentTimeMillis() - time;
+                final String ms = Long.toUnsignedString(latency);
+                final MessageEmbed message = buildPingMessage(ms);
+                return event.getHook().editOriginalEmbeds(message);
+            })
+            .queue();
+    }
+
+    /* Internal */
+
+    private MessageEmbed buildPingMessage(String ms) {
+        final EmbedBuilder builder = new EmbedBuilder();
+
+        builder.setDescription("**Ping:** `" + ms + "`ms");
+        return builder.build();
+    }
+}
