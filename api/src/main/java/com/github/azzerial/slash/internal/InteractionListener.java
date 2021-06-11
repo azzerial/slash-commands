@@ -14,32 +14,17 @@
  * limitations under the License.
  */
 
-package com.github.azzerial.slash;
+package com.github.azzerial.slash.internal;
 
-import com.github.azzerial.slash.internal.CommandRegistry;
-import com.github.azzerial.slash.internal.InteractionListener;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public final class SlashClient {
+public final class InteractionListener extends ListenerAdapter {
 
-    private final JDA jda;
     private final CommandRegistry registry;
-    private final EventListener listener;
 
     /* Constructors */
 
-    SlashClient(JDA jda, CommandRegistry registry) {
-        this.jda = jda;
+    public InteractionListener(CommandRegistry registry) {
         this.registry = registry;
-        this.listener = new InteractionListener(registry);
-
-        jda.addEventListener(listener);
-    }
-
-    /* Methods */
-
-    public SlashCommand getCommand(String tag) {
-        return registry.getCommand(tag);
     }
 }
