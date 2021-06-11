@@ -43,19 +43,18 @@ public final class SlashClientBuilder {
         return new SlashClientBuilder(jda);
     }
 
-    public SlashCommand addCommand(Object command) {
+    public SlashClientBuilder addCommand(Object command) {
         Checks.notNull(command, "Command");
-        return registry.registerCommand(command);
+        registry.registerCommand(command);
+        return this;
     }
 
-    public List<SlashCommand> addCommands(Object... commands) {
+    public SlashClientBuilder addCommands(Object... commands) {
         Checks.notNull(commands, "Commands");
-        final List<SlashCommand> list = new LinkedList<>();
-
         for (Object command : commands) {
-            list.add(addCommand(command));
+            addCommand(command);
         }
-        return Collections.unmodifiableList(list);
+        return this;
     }
 
     public SlashClient build() {
