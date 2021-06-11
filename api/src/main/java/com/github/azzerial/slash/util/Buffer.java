@@ -17,6 +17,7 @@
 package com.github.azzerial.slash.util;
 
 import com.github.azzerial.slash.internal.ButtonRegistry;
+import net.dv8tion.jda.internal.utils.Checks;
 
 public final class Buffer {
 
@@ -31,6 +32,10 @@ public final class Buffer {
         /* Constructors */
 
         public Reader(String buffer) {
+            Checks.notNull(buffer, "Buffer");
+            if (buffer.length() <= i) {
+                throw new IllegalArgumentException("The buffer is invalid!");
+            }
             this.buffer = buffer;
         }
 
