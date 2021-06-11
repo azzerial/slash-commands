@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.Checks;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -37,14 +38,16 @@ public final class SlashCommand {
     private final JDA jda;
     private final String tag;
     private final CommandData data;
+    private final Map<String, Method> handlers;
     private final Map<Long, AtomicReference<Command>> instances = new HashMap<>();
 
     /* Constructors */
 
-    public SlashCommand(JDA jda, String tag, CommandData data) {
+    public SlashCommand(JDA jda, String tag, CommandData data, Map<String, Method> handlers) {
         this.jda = jda;
         this.tag = tag;
         this.data = data;
+        this.handlers = handlers;
     }
 
     /* Getters & Setters */

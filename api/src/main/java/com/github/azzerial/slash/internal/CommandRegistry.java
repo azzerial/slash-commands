@@ -21,6 +21,7 @@ import com.github.azzerial.slash.annotations.Slash;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +45,8 @@ public final class CommandRegistry {
 
     /* Methods */
 
-    public SlashCommand registerCommand(Object o) {
-        final SlashCommand command = compileCommand(o);
+    public SlashCommand registerCommand(Object obj) {
+        final SlashCommand command = compileCommand(obj);
 
         registry.put(command.getTag(), command);
         return command;
@@ -53,8 +54,8 @@ public final class CommandRegistry {
 
     /* Internal */
 
-    private SlashCommand compileCommand(Object o) {
-        final Class<?> cls = o.getClass();
+    private SlashCommand compileCommand(Object obj) {
+        final Class<?> cls = obj.getClass();
         final Slash.Tag tag = cls.getAnnotation(Slash.Tag.class);
         final Slash.Command command = cls.getAnnotation(Slash.Command.class);
 
@@ -69,6 +70,7 @@ public final class CommandRegistry {
         }
 
         final CommandData data = annotationCompiler.compileCommand(command);
-        return new SlashCommand(jda, tag.value(), data);
+        final Map<String, Method> handlers = annotationCompiler.compileHandlers(cls, data);
+        return new SlashCommand(jda, tag.value(), data, handlers);
     }
 }

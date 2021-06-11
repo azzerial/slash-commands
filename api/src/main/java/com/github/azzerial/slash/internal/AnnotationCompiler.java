@@ -20,6 +20,7 @@ import com.github.azzerial.slash.annotations.Option;
 import com.github.azzerial.slash.annotations.Slash;
 import com.github.azzerial.slash.annotations.Subcommand;
 import com.github.azzerial.slash.annotations.SubcommandGroup;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -28,7 +29,9 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.internal.utils.Checks;
 
-import java.util.Arrays;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class AnnotationCompiler {
@@ -61,6 +64,26 @@ public final class AnnotationCompiler {
             );
         }
         return data;
+    }
+
+    public Map<String, Method> compileHandlers(Class<?> cls, CommandData data) {
+        final List<Method> methods = Arrays.stream(cls.getDeclaredMethods())
+            .filter(method ->
+                (method.getModifiers() & (Modifier.PROTECTED | Modifier.PRIVATE)) == 0
+                    && method.isAnnotationPresent(Slash.Handler.class)
+                    && method.getParameterCount() == 1
+                    && method.getParameterTypes()[0] == SlashCommandEvent.class
+            )
+            .collect(Collectors.toList());
+        final Map<String, List<Method>> handlers = buildHandlersMap(methods);
+
+        checkHandlers(data, handlers);
+        return new HashMap<String, Method>() {{
+            handlers.forEach((k, v) -> put(
+                data.getName() + (k.isEmpty() ? "" : "/" + k),
+                v.get(0)
+            ));
+        }};
     }
 
     /* Internal */
@@ -110,4 +133,48 @@ public final class AnnotationCompiler {
                     .collect(Collectors.toList())
             );
     }
+
+    private Map<String, List<Method>> buildHandlersMap(List<Method> methods) {
+        final Map<String, List<Method>> handlers = new HashMap<>();
+
+        for (Method method : methods) {
+            final Slash.Handler handler = method.getAnnotation(Slash.Handler.class);
+
+            if (!handlers.containsKey(handler.value())) {
+                handlers.put(handler.value(), new LinkedList<>());
+            }
+            handlers.get(handler.value()).add(method);
+        }
+        return handlers;
+    }
+
+    private void checkHandlers(CommandData data, Map<String, List<Method>> handlers) {
+        final Set<String> paths = new HashSet<>();
+
+        if (!data.getSubcommandGroups().isEmpty()) {
+            for (SubcommandGroupData subcommandGroup : data.getSubcommandGroups()) {
+                for (SubcommandData subcommand : subcommandGroup.getSubcommands()) {
+                    paths.add(subcommandGroup.getName() + "/" + subcommand.getName());
+                }
+            }
+        } else if (!data.getSubcommands().isEmpty()) {
+            for (SubcommandData subcommand : data.getSubcommands()) {
+                paths.add(subcommand.getName());
+            }
+        } else {
+            paths.add("");
+        }
+
+        for (String path : handlers.keySet()) {
+            final List<Method> methods = handlers.get(path);
+
+            if (!paths.contains(path)) {
+                throw new IllegalArgumentException("Could not find the '" + path + "' command path in '" + data.getName() + "'!");
+            }
+            if (methods.size() != 1) {
+                throw new IllegalArgumentException("Multiple handlers were declared for the '" + path + "' command path in '" + data.getName() + "'!");
+            }
+        }
+    }
+
 }
