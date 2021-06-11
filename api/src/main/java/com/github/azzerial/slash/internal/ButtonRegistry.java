@@ -51,7 +51,7 @@ public final class ButtonRegistry {
             "%." + (100 - CODE_LENGTH) + "s",
             Integer.toUnsignedString(code == -1 ? 0 : code, ID_BASE),
             data == null ? "" : data
-        );
+        ).trim();
     }
 
     public ButtonCallback getButtonCallback(String id) {
