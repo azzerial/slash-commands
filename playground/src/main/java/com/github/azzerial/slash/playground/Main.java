@@ -16,6 +16,8 @@
 
 package com.github.azzerial.slash.playground;
 
+import com.github.azzerial.slash.SlashClient;
+import com.github.azzerial.slash.SlashClientBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -41,6 +43,9 @@ public final class Main {
                 .createLight(token, EnumSet.noneOf(GatewayIntent.class))
                 .build()
                 .awaitReady();
+            final SlashClient slash = SlashClientBuilder
+                .create(jda)
+                .build();
         } catch (LoginException e) {
             logger.error("The bot token was invalid!");
         } catch (InterruptedException e) {
