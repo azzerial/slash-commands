@@ -16,17 +16,24 @@
 
 package com.github.azzerial.slash;
 
+import com.github.azzerial.slash.internal.CommandRegistry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.internal.utils.Checks;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class SlashClientBuilder {
 
     private final JDA jda;
+    private final CommandRegistry registry;
 
     /* Constructors */
 
     private SlashClientBuilder(JDA jda) {
         this.jda = jda;
+        this.registry = new CommandRegistry(jda);
     }
 
     /* Methods */
@@ -34,6 +41,21 @@ public final class SlashClientBuilder {
     public static SlashClientBuilder create(JDA jda) {
         Checks.notNull(jda, "JDA");
         return new SlashClientBuilder(jda);
+    }
+
+    public SlashCommand addCommand(Object command) {
+        Checks.notNull(command, "Command");
+        return registry.registerCommand(command);
+    }
+
+    public List<SlashCommand> addCommands(Object... commands) {
+        Checks.notNull(commands, "Commands");
+        final List<SlashCommand> list = new LinkedList<>();
+
+        for (Object command : commands) {
+            list.add(addCommand(command));
+        }
+        return Collections.unmodifiableList(list);
     }
 
     public SlashClient build() {
