@@ -23,5 +23,5 @@ ext.moduleName = 'api'
 archivesBaseName = moduleName
 
 dependencies {
-    implementation ('com.github.DV8FromTheWorld:JDA:development-SNAPSHOT')
+    implementation ('net.dv8tion:JDA:4.3.0_277')
 }
