@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.github.azzerial.slash.internal.ButtonRegistry.CODE_LENGTH;
@@ -49,7 +50,7 @@ public final class Session extends DataObject {
     private final long timeout;
     private final TimeUnit unit;
     private final InteractionHook hook;
-    private final Consumer<InteractionHook> action;
+    private final BiConsumer<InteractionHook, Session> action;
     private ScheduledFuture<?> thread;
 
     /* Constructors */
@@ -58,7 +59,7 @@ public final class Session extends DataObject {
         this(session.uuid, data, session.timeout, session.unit, session.hook, session.action);
     }
 
-    private Session(UUID uuid, Map<String, Object> data, long timeout, TimeUnit unit, InteractionHook hook, Consumer<InteractionHook> action) {
+    private Session(UUID uuid, Map<String, Object> data, long timeout, TimeUnit unit, InteractionHook hook, BiConsumer<InteractionHook, Session> action) {
         super(data);
         Checks.notNull(uuid, "UUID");
         Checks.notNegative(timeout, "Timeout");
@@ -87,13 +88,12 @@ public final class Session extends DataObject {
         return create(timeout, unit, null, null);
     }
 
-    public static Session create(long timeout, TimeUnit unit, InteractionHook hook, Consumer<InteractionHook> action) {
+    public static Session create(long timeout, TimeUnit unit, InteractionHook hook, BiConsumer<InteractionHook, Session> action) {
         Checks.positive(timeout, "Timeout");
         Checks.notNull(unit, "Unit");
         final UUID uuid = UUID.randomUUID();
         final Session session = new Session(uuid, new HashMap<>(), timeout, unit, hook, action);
 
-        System.out.println("created: " + uuid);
         sessions.put(uuid, session);
         return session;
     }
@@ -170,9 +170,7 @@ public final class Session extends DataObject {
         }
         if (renew) {
             session.startTimeoutThread();
-            System.out.println("renewed: " + session.uuid);
-        } else {
-            System.out.println("loaded: " + session.uuid);
+            sessions.put(session.uuid, session);
         }
         return session;
     }
@@ -184,9 +182,8 @@ public final class Session extends DataObject {
             }
 
             this.thread = threadpool.schedule(() -> {
-                System.out.println("destroyed: " + uuid);
                 if (sessions.remove(uuid) != null && hook != null && action != null) {
-                    action.accept(hook);
+                    action.accept(hook, this);
                 }
             }, timeout, unit);
         } else {
