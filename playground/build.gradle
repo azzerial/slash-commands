@@ -21,7 +21,7 @@ plugins {
 dependencies {
     implementation project(':api')
     implementation ('ch.qos.logback:logback-classic:1.2.3')
-    implementation ('com.github.DV8FromTheWorld:JDA:development-SNAPSHOT')
+    implementation ('net.dv8tion:JDA:4.3.0_277')
 }
 
 java {
@@ -33,8 +33,10 @@ java {
 tasks.named('run') {
     if (file('.env').exists()) {
         file('.env').eachLine {
-            def (key, value) = it.tokenize('=')
-            environment(key, value)
+            if (it.matches('[^#][^=]+=.*')) {
+                def (key, value) = it.tokenize('=')
+                environment(key, value)
+            }
         }
     }
 }

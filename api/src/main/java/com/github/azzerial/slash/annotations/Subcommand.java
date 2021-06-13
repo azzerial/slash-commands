@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'java-library'
-}
+package com.github.azzerial.slash.annotations;
 
-project.version = rootProject.version
-ext.moduleName = 'api'
-archivesBaseName = moduleName
+import java.lang.annotation.*;
 
-dependencies {
-    implementation ('net.dv8tion:JDA:4.3.0_277')
+/**
+ * This annotation represents a Slash Command subcommand.
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Subcommand {
+
+    /** The name of the subcommand, must match {@code [a-z0-9-]{1,32}}.*/
+    String name();
+    /** The description of the subcommand, cannot be empty or longer than {@code 100} characters.*/
+    String description();
+    /** The option list of the subcommand. */
+    Option[] options() default {};
 }

@@ -9,40 +9,53 @@
 <p align="center">
   <a href="#features">Features</a> •
   <a href="#how-to-use">How To Use</a> •
-  <a href="#related">Related</a> •
-  <a href="#contributing">Contributing</a> •
   <a href="#license">License</a>
 </p>
+
+
 <br>
 
 ## Features
 
 A few of the things you can do with Slash Commands:
 
-* some feature
-* another feature
+* Create and manage Slash Commands
+* Assign callbacks to Slash Commands events (supports per [command path](https://ci.dv8tion.net/job/JDA/javadoc/net/dv8tion/jda/api/interactions/commands/CommandInteraction.html#getCommandPath()) callbacks)
+* Assign callbacks to buttons
+* Session system for interactions (with session store)
 
 ## How to Use
 
 ```java
-public class Example {
+@Slash.Tag("slash_cmd")
+@Slash.Command(
+    name = "slash-command",
+    description = "A proof of concept Slash Command"
+)
+public final class SlashCommand {
 
-    public static void main(String[] args) {
-        System.out.println("Hello World");
+    public static void main(String[] args) throws LoginException, InterruptedException {
+        final JDA jda = JDABuilder.createDefault(...)
+            .build()
+            .awaitReady();
+        final SlashClient slash = SlashClientBuilder.create(jda)
+            .addCommand(new SlashCommand()) // register your commands
+            .build();
+
+        slash.getCommand("slash_cmd") // get a SlashCommand by it's @Slash.Tag
+            .upsertGuild(...); // upsert as a guild Slash Command
+    }
+
+    @Slash.Handler
+    public void callback(SlashCommandEvent event) {
+        event.deferReply()
+            .setContent("Hello World!")
+            .queue();
     }
 }
 ```
 
-*For more examples and usage, please refer to the [wiki](wiki).*
-
-## Related
-
-* some project
-* another project
-
-## Contributing
-
-Your contributions are always welcome! Please take a moment to read the [contribution guidelines](CONTRIBUTING.md) first.
+*For more examples and usage, please refer to the [playground module](playground/).*
 
 ## License
 

@@ -16,6 +16,9 @@
 
 package com.github.azzerial.slash.playground;
 
+import com.github.azzerial.slash.SlashClient;
+import com.github.azzerial.slash.SlashClientBuilder;
+import com.github.azzerial.slash.playground.commands.PingCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -34,6 +37,7 @@ public final class Main {
     public static void main(String[] args) {
         // get the .env config variables
         final String token = System.getenv("token");
+        final String guildId = System.getenv("guild_id");
 
         try {
             // create the JDA instance
@@ -41,6 +45,14 @@ public final class Main {
                 .createLight(token, EnumSet.noneOf(GatewayIntent.class))
                 .build()
                 .awaitReady();
+            // create the SlashClient instance
+            final SlashClient slash = SlashClientBuilder
+                .create(jda)
+                .addCommand(new PingCommand()) // register the ping command
+                .build();
+
+            // add the command to a guild if not already added
+            slash.getCommand("ping").upsertGuild(guildId);
         } catch (LoginException e) {
             logger.error("The bot token was invalid!");
         } catch (InterruptedException e) {

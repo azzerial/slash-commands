@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'java-library'
-}
+package com.github.azzerial.slash.annotations;
 
-project.version = rootProject.version
-ext.moduleName = 'api'
-archivesBaseName = moduleName
-
-dependencies {
-    implementation ('net.dv8tion:JDA:4.3.0_277')
+/**
+ * This enum represents the type of a Slash Command option.
+ */
+public enum OptionType {
+    STRING,
+    INTEGER,
+    BOOLEAN,
+    USER,
+    CHANNEL,
+    ROLE,
+    MENTIONABLE
 }

@@ -14,14 +14,29 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'java-library'
-}
+package com.github.azzerial.slash.internal;
 
-project.version = rootProject.version
-ext.moduleName = 'api'
-archivesBaseName = moduleName
+import java.lang.reflect.Method;
 
-dependencies {
-    implementation ('net.dv8tion:JDA:4.3.0_277')
+public final class ButtonCallback {
+
+    private final Object obj;
+    private final Method method;
+
+    /* Constructors */
+
+    ButtonCallback(Object obj, Method method) {
+        this.obj = obj;
+        this.method = method;
+    }
+
+    /* Getters & Setters */
+
+    public Object getObjectInstance() {
+        return obj;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
 }
