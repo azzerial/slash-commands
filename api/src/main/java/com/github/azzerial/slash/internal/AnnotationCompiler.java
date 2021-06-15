@@ -75,15 +75,29 @@ public final class AnnotationCompiler {
                     && method.getParameterTypes()[0] == SlashCommandEvent.class
             )
             .collect(Collectors.toList());
-        final Map<String, List<Method>> handlers = buildHandlersMap(methods);
+        final Map<String, Method> handlers = buildHandlers(cls, methods);
+        final Set<String> paths = buildPaths(data);
+        final Map<String, Method> mappings = new HashMap<>();
 
-        checkHandlers(data, handlers);
-        return new HashMap<String, Method>() {{
-            handlers.forEach((k, v) -> put(
-                data.getName() + (k.isEmpty() ? "" : "/" + k),
-                v.get(0)
-            ));
-        }};
+        for (String path : paths) {
+            final String commandPath = path.isEmpty() ? data.getName() : data.getName() + "/" + path;
+
+            if (handlers.containsKey(path)) {
+                mappings.put(commandPath, handlers.get(path));
+                continue;
+            }
+
+            final String[] parts = path.split("/");
+
+            if (parts.length == 2 && handlers.containsKey("*/" + parts[1])) {
+                mappings.put(commandPath, handlers.get("*/" + parts[1]));
+            } else if (parts.length == 2 && handlers.containsKey(parts[0])) {
+                mappings.put(commandPath, handlers.get(parts[0]));
+            } else if (handlers.containsKey("")) {
+                mappings.put(commandPath, handlers.get(""));
+            }
+        }
+        return mappings;
     }
 
     /* Internal */
@@ -134,21 +148,22 @@ public final class AnnotationCompiler {
             );
     }
 
-    private Map<String, List<Method>> buildHandlersMap(List<Method> methods) {
-        final Map<String, List<Method>> handlers = new HashMap<>();
+    private Map<String, Method> buildHandlers(Class<?> cls, List<Method> methods) {
+        final Map<String, Method> handlers = new HashMap<>();
 
         for (Method method : methods) {
             final Slash.Handler handler = method.getAnnotation(Slash.Handler.class);
 
             if (!handlers.containsKey(handler.value())) {
-                handlers.put(handler.value(), new LinkedList<>());
+                handlers.put(handler.value(), method);
+            } else {
+                throw new IllegalArgumentException("Multiple handlers were declared for the '" + handler.value() + "' command path in " + cls.getSimpleName() + ".class!");
             }
-            handlers.get(handler.value()).add(method);
         }
         return handlers;
     }
 
-    private void checkHandlers(CommandData data, Map<String, List<Method>> handlers) {
+    private Set<String> buildPaths(CommandData data) {
         final Set<String> paths = new HashSet<>();
 
         if (!data.getSubcommandGroups().isEmpty()) {
@@ -164,17 +179,6 @@ public final class AnnotationCompiler {
         } else {
             paths.add("");
         }
-
-        for (String path : handlers.keySet()) {
-            final List<Method> methods = handlers.get(path);
-
-            if (!paths.contains(path)) {
-                throw new IllegalArgumentException("Could not find the '" + path + "' command path in '" + data.getName() + "'!");
-            }
-            if (methods.size() != 1) {
-                throw new IllegalArgumentException("Multiple handlers were declared for the '" + path + "' command path in '" + data.getName() + "'!");
-            }
-        }
+        return paths;
     }
-
 }
