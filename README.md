@@ -38,37 +38,37 @@ A few of the things you can do with Slash Commands:
 ## How to Use
 
 ```java
-@Slash.Tag("slash_cmd")
+@Slash.Tag("ping_command")
 @Slash.Command(
-    name = "slash-command",
-    description = "A proof of concept Slash Command"
+    name = "ping",
+    description = "Check if the application is online"
 )
-public final class SlashCommand {
+public class PingCommand {
 
     public static void main(String[] args) throws LoginException, InterruptedException {
         final JDA jda = JDABuilder.createDefault(...)
             .build()
             .awaitReady();
         final SlashClient slash = SlashClientBuilder.create(jda)
-            .addCommand(new SlashCommand()) // register your commands
+            .addCommand(new PingCommand()) // register the ping command
             .build();
 
-        slash.getCommand("slash_cmd") // get a SlashCommand by it's @Slash.Tag
-            .upsertGuild(...); // upsert as a guild Slash Command
+        slash.getCommand("ping_command") // get the ping command by it's @Slash.Tag
+            .upsertGuild(...); // upsert it as a guild Slash Command
     }
 
-    @Slash.Handler
+    @Slash.Handler()
     public void callback(SlashCommandEvent event) {
         event.deferReply()
-            .setContent("Hello World!")
+            .setContent("pong!")
             .queue();
     }
 }
 ```
 
-*For more examples and usage, please refer to the [playground module](playground/).*
+*For more examples and usage guides, please refer to the [wiki](https://github.com/Azzerial/slash-commands/wiki) and the [playground module](playground/).*
 
-## Installation 
+## Installation
 
 This project uses [Jitpack](https://jitpack.io/#azzerial/slash-commands).
 
@@ -110,5 +110,5 @@ This project is licensed under the [Apache License 2.0](LICENSE) © 2021 [Robin 
 ---
 
 <p align="center">
-  GitHub <a href="https://github.com/azzerial">@Azzerial</a>
+  Slash Commands by <a href="https://github.com/azzerial">@Azzerial</a>
 </p>
