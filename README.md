@@ -66,7 +66,7 @@ public final class SlashCommand {
 }
 ```
 
-*For more examples and usage, please refer to the [playground module](playground/).*
+*For more examples and usage guides, please refer to the [wiki](https://github.com/Azzerial/slash-commands/wiki) and the [playground module](playground/).*
 
 ## Installation 
 
