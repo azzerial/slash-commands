@@ -16,6 +16,8 @@
 
 package com.github.azzerial.slash.internal;
 
+import com.github.azzerial.slash.internal.util.UnsignedBase512;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +26,6 @@ import java.util.Map;
 public final class ButtonRegistry {
 
     public static final int CODE_LENGTH = 4;
-    public static final int ID_BASE = 32;
     private static final ButtonRegistry INSTANCE = new ButtonRegistry();
 
     private final List<String> codes;
@@ -49,13 +50,13 @@ public final class ButtonRegistry {
         return String.format(
             "%-" + CODE_LENGTH + "." + CODE_LENGTH + "s" +
             "%." + (100 - CODE_LENGTH) + "s",
-            Integer.toUnsignedString(code == -1 ? 0 : code, ID_BASE),
+            UnsignedBase512.toString(code == -1 ? 0 : code),
             data == null ? "" : data
         ).trim();
     }
 
     public ButtonCallback getButtonCallback(String id) {
-        final int code = Integer.parseUnsignedInt(parseCode(id), ID_BASE);
+        final int code = UnsignedBase512.parseInt(parseCode(id));
         final String tag = codes.get(code);
         return mappings.get(tag);
     }
