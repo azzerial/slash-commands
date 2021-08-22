@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.github.azzerial.slash.internal.ButtonRegistry.CODE_LENGTH;
+import static com.github.azzerial.slash.internal.ComponentRegistry.CODE_LENGTH;
 
 public final class Session extends DataObject {
 

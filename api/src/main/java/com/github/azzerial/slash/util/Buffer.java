@@ -16,8 +16,9 @@
 
 package com.github.azzerial.slash.util;
 
-import com.github.azzerial.slash.internal.ButtonRegistry;
 import net.dv8tion.jda.internal.utils.Checks;
+
+import static com.github.azzerial.slash.internal.ComponentRegistry.CODE_LENGTH;
 
 public final class Buffer {
 
@@ -27,7 +28,7 @@ public final class Buffer {
 
         private final String buffer;
 
-        private int i = ButtonRegistry.CODE_LENGTH;
+        private int i = CODE_LENGTH;
 
         /* Constructors */
 
@@ -127,7 +128,7 @@ public final class Buffer {
         }
 
         public Writer write(int size, String s) {
-            if (sb.length() + size > 100 - ButtonRegistry.CODE_LENGTH) {
+            if (sb.length() + size > 100 - CODE_LENGTH) {
                 throw new OutOfMemoryError("Required allocation size is greater than the available one!");
             }
             sb.append(String.format("%-" + size + "." + size + "s", s));

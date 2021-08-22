@@ -102,7 +102,7 @@ public final class CommandRegistry {
                 final String tag = method.getAnnotation(Slash.Button.class).value();
 
                 if (!tag.isEmpty()) {
-                    ButtonRegistry.getInstance().registerButton(tag, new ButtonCallback(obj, method));
+                    ComponentRegistry.getInstance().registerComponent(tag, new ComponentCallback(obj, method));
                 }
             });
     }

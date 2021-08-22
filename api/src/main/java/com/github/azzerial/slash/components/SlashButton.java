@@ -16,7 +16,7 @@
 
 package com.github.azzerial.slash.components;
 
-import com.github.azzerial.slash.internal.ButtonRegistry;
+import com.github.azzerial.slash.internal.ComponentRegistry;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.Component;
@@ -62,7 +62,7 @@ public final class SlashButton implements Component {
     @Nullable
     @Override
     public String getId() {
-        return tag == null ? null : ButtonRegistry.getInstance().createButtonId(tag, data);
+        return tag == null ? null : ComponentRegistry.getInstance().formatComponentId(tag, data);
     }
 
     public String getTag() {
@@ -81,7 +81,7 @@ public final class SlashButton implements Component {
 
     public SlashButton withData(String data) {
         Checks.notEmpty(data, "Data");
-        Checks.notLonger(data, 100 - ButtonRegistry.CODE_LENGTH, "Data");
+        Checks.notLonger(data, 100 - ComponentRegistry.CODE_LENGTH, "Data");
         this.data = data;
         return this;
     }
