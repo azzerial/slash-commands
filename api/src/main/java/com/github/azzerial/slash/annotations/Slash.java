@@ -75,6 +75,18 @@ public @interface Slash {
     }
 
     /**
+     * This annotation labels a method as a Slash Command selection menu handler.
+     */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface SelectionMenu {
+
+        /** The tag of the selection menu. */
+        String value();
+    }
+
+    /**
      * This annotations assigns an identification tag to a Slash Command for registration purposes.
      */
     @Documented
