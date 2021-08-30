@@ -21,6 +21,8 @@ import com.github.azzerial.slash.internal.InteractionListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.hooks.EventListener;
 
+import java.util.EnumSet;
+
 public final class SlashClient {
 
     private final JDA jda;
@@ -41,5 +43,36 @@ public final class SlashClient {
 
     public SlashCommand getCommand(String tag) {
         return registry.getCommand(tag);
+    }
+
+    /* Nested Classes */
+
+    public enum Flag {
+        DELETE_UNREGISTERED_COMMANDS;
+
+        private final boolean isDefault;
+
+        /* Constructors */
+
+        Flag() {
+            this(false);
+        }
+
+        Flag(boolean isDefault) {
+            this.isDefault = isDefault;
+        }
+
+        /* Methods */
+
+        public static EnumSet<Flag> getDefault() {
+            final EnumSet<Flag> set = EnumSet.noneOf(Flag.class);
+
+            for (Flag flag : values()) {
+                if (flag.isDefault) {
+                    set.add(flag);
+                }
+            }
+            return set;
+        }
     }
 }

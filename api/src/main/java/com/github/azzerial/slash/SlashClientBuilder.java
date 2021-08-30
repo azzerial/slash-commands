@@ -16,12 +16,14 @@
 
 package com.github.azzerial.slash;
 
+import com.github.azzerial.slash.SlashClient.Flag;
 import com.github.azzerial.slash.internal.CommandRegistry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.internal.utils.Checks;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 public final class SlashClientBuilder {
@@ -29,13 +31,14 @@ public final class SlashClientBuilder {
     private final JDA jda;
     private final CommandRegistry registry;
 
-    private boolean deleteUnregisteredCommands = false;
+    private final EnumSet<Flag> flags;
 
     /* Constructors */
 
     private SlashClientBuilder(JDA jda) {
         this.jda = jda;
         this.registry = new CommandRegistry(jda);
+        this.flags = Flag.getDefault();
     }
 
     /* Methods */
@@ -59,12 +62,18 @@ public final class SlashClientBuilder {
         return this;
     }
 
-    public SlashClientBuilder deleteUnregisteredCommands(boolean enabled) {
-        this.deleteUnregisteredCommands = enabled;
+    public SlashClientBuilder setFlag(Flag flag, boolean enabled) {
+        Checks.notNull(flag, "Flag");
+        if (enabled) {
+            flags.add(flag);
+        } else {
+            flags.remove(flag);
+        }
         return this;
     }
 
     public SlashClient build() {
+        Checks.check(jda.getStatus() == JDA.Status.CONNECTED, "JDA is not JDA.Status.CONNECTED! Maybe you forgot to call JDA#awaitReady()?");
         final Collection<SlashCommand> commands = registry.getCommands();
 
         loadGlobalCommands(commands);
@@ -81,7 +90,7 @@ public final class SlashClientBuilder {
             for (Command cmd : cmds) {
                 if (cmd.getName().equals(command.getData().getName())) {
                     command.putCommand(SlashCommand.GLOBAL, cmd);
-                } else if (deleteUnregisteredCommands) {
+                } else if (flags.contains(Flag.DELETE_UNREGISTERED_COMMANDS)) {
                     cmd.delete().queue();
                 }
             }
@@ -97,7 +106,7 @@ public final class SlashClientBuilder {
                     for (Command cmd : cmds) {
                         if (cmd.getName().equals(command.getData().getName())) {
                             command.putCommand(guild.getIdLong(), cmd);
-                        } else if (deleteUnregisteredCommands) {
+                        } else if (flags.contains(Flag.DELETE_UNREGISTERED_COMMANDS)) {
                             cmd.delete().queue();
                         }
                     }
