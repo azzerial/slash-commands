@@ -17,7 +17,7 @@
 package com.github.azzerial.slash.internal;
 
 import com.github.azzerial.slash.SlashCommand;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -56,18 +56,18 @@ public final class InteractionListener extends ListenerAdapter {
     }
 
     @Override
-    public void onButtonClick(ButtonClickEvent event) {
+    public void onGenericComponentInteractionCreate(GenericComponentInteractionCreateEvent event) {
         if (event.getUser().isBot()) {
             return;
         }
 
-        final ButtonCallback button = ButtonRegistry.getInstance().getButtonCallback(event.getComponentId());
+        final ComponentCallback callback = ComponentRegistry.getInstance().getComponentCallback(event.getComponentId());
 
-        if (button != null) {
-            final Method method = button.getMethod();
+        if (callback != null) {
+            final Method method = callback.getMethod();
 
             try {
-                method.invoke(button.getObjectInstance(), event);
+                method.invoke(callback.getObjectInstance(), event);
             } catch (IllegalAccessException | InvocationTargetException ignored) {}
         }
     }

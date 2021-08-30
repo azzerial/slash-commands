@@ -18,14 +18,14 @@ package com.github.azzerial.slash.internal;
 
 import java.lang.reflect.Method;
 
-public final class ButtonCallback {
+public final class ComponentCallback {
 
     private final Object obj;
     private final Method method;
 
     /* Constructors */
 
-    ButtonCallback(Object obj, Method method) {
+    ComponentCallback(Object obj, Method method) {
         this.obj = obj;
         this.method = method;
     }

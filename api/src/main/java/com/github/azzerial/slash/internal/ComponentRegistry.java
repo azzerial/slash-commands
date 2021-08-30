@@ -16,23 +16,24 @@
 
 package com.github.azzerial.slash.internal;
 
+import com.github.azzerial.slash.internal.util.UnsignedBase512;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public final class ButtonRegistry {
+public final class ComponentRegistry {
 
     public static final int CODE_LENGTH = 4;
-    public static final int ID_BASE = 32;
-    private static final ButtonRegistry INSTANCE = new ButtonRegistry();
+    private static final ComponentRegistry INSTANCE = new ComponentRegistry();
 
     private final List<String> codes;
-    private final Map<String, ButtonCallback> mappings = new HashMap<>();
+    private final Map<String, ComponentCallback> mappings = new HashMap<>();
 
     /* Constructors */
 
-    private ButtonRegistry() {
+    private ComponentRegistry() {
         this.codes = new LinkedList<>();
 
         codes.add(null);
@@ -40,29 +41,29 @@ public final class ButtonRegistry {
 
     /* Getters & Setters */
 
-    public static ButtonRegistry getInstance() {
+    public static ComponentRegistry getInstance() {
         return INSTANCE;
     }
 
-    public String createButtonId(String tag, String data) {
+    public String formatComponentId(String tag, String data) {
         final int code = codes.indexOf(tag);
         return String.format(
             "%-" + CODE_LENGTH + "." + CODE_LENGTH + "s" +
             "%." + (100 - CODE_LENGTH) + "s",
-            Integer.toUnsignedString(code == -1 ? 0 : code, ID_BASE),
+            UnsignedBase512.toString(code == -1 ? 0 : code),
             data == null ? "" : data
         ).trim();
     }
 
-    public ButtonCallback getButtonCallback(String id) {
-        final int code = Integer.parseUnsignedInt(parseCode(id), ID_BASE);
+    public ComponentCallback getComponentCallback(String id) {
+        final int code = UnsignedBase512.parseInt(parseCode(id));
         final String tag = codes.get(code);
         return mappings.get(tag);
     }
 
     /* Methods */
 
-    public void registerButton(String tag, ButtonCallback callback) {
+    public void registerComponent(String tag, ComponentCallback callback) {
         if (!codes.contains(tag)) {
             codes.add(tag);
             mappings.put(tag, callback);

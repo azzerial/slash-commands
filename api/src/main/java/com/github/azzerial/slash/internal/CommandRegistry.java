@@ -20,6 +20,7 @@ import com.github.azzerial.slash.SlashCommand;
 import com.github.azzerial.slash.annotations.Slash;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 import java.lang.reflect.Method;
@@ -61,6 +62,7 @@ public final class CommandRegistry {
         final SlashCommand command = compileCommand(obj);
 
         registerButtons(obj);
+        registerSelectionMenus(obj);
         registry.put(command.getTag(), command);
         return command;
     }
@@ -102,7 +104,27 @@ public final class CommandRegistry {
                 final String tag = method.getAnnotation(Slash.Button.class).value();
 
                 if (!tag.isEmpty()) {
-                    ButtonRegistry.getInstance().registerButton(tag, new ButtonCallback(obj, method));
+                    ComponentRegistry.getInstance().registerComponent(tag, new ComponentCallback(obj, method));
+                }
+            });
+    }
+
+    private void registerSelectionMenus(Object obj) {
+        final Class<?> cls = obj.getClass();
+
+        Arrays.stream(cls.getDeclaredMethods())
+            .filter(method ->
+                (method.getModifiers() & (Modifier.PROTECTED | Modifier.PRIVATE)) == 0
+                    && method.isAnnotationPresent(Slash.SelectionMenu.class)
+                    && method.getParameterCount() == 1
+                    && method.getParameterTypes()[0] == SelectionMenuEvent.class
+            )
+            .sorted(Comparator.comparing(Method::getName))
+            .forEach(method -> {
+                final String tag = method.getAnnotation(Slash.SelectionMenu.class).value();
+
+                if (!tag.isEmpty()) {
+                    ComponentRegistry.getInstance().registerComponent(tag, new ComponentCallback(obj, method));
                 }
             });
     }
