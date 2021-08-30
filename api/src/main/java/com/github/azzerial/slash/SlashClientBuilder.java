@@ -65,6 +65,7 @@ public final class SlashClientBuilder {
     }
 
     public SlashClient build() {
+        Checks.check(jda.getStatus() == JDA.Status.CONNECTED, "JDA is not JDA.Status.CONNECTED! Maybe you forgot to call JDA#awaitReady()?");
         final Collection<SlashCommand> commands = registry.getCommands();
 
         loadGlobalCommands(commands);
