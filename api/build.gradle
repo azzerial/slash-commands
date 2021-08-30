@@ -23,5 +23,6 @@ ext.moduleName = 'api'
 archivesBaseName = moduleName
 
 dependencies {
-    implementation ('net.dv8tion:JDA:4.3.0_277')
+    implementation jda()
+    implementation slf4j()
 }
