@@ -22,7 +22,6 @@ dependencies {
     implementation project(':api')
     implementation logback()
     implementation jda()
-    implementation slf4j()
 }
 
 java {

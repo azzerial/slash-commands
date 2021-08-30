@@ -24,5 +24,4 @@ archivesBaseName = moduleName
 
 dependencies {
     implementation jda()
-    implementation slf4j()
 }
