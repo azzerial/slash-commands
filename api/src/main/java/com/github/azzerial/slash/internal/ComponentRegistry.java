@@ -22,11 +22,30 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public final class ComponentRegistry {
 
     public static final int CODE_LENGTH = 4;
+    public static final Pattern ID_PATTERN;
     private static final ComponentRegistry INSTANCE = new ComponentRegistry();
+
+    static {
+        StringBuilder sb = new StringBuilder("(");
+
+        for (int i = 0; i != CODE_LENGTH; i++) {
+            sb.append('[' + UnsignedBase512.NUMERALS + "]{").append(i + 1).append('}');
+            for (int n = CODE_LENGTH - i - 1; n != 0; n--) {
+                sb.append(' ');
+            }
+            if (i + 1 != CODE_LENGTH) {
+                sb.append('|');
+            }
+        }
+        sb.append(")(.)?");
+
+        ID_PATTERN = Pattern.compile(sb.toString());
+    }
 
     private final List<String> codes;
     private final Map<String, ComponentCallback> mappings = new HashMap<>();
@@ -56,6 +75,9 @@ public final class ComponentRegistry {
     }
 
     public ComponentCallback getComponentCallback(String id) {
+        if (!ID_PATTERN.matcher(id).matches()) {
+            return null;
+        }
         final int code = UnsignedBase512.parseInt(parseCode(id));
         final String tag = codes.get(code);
         return mappings.get(tag);

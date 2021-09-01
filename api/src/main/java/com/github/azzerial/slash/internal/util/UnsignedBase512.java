@@ -20,8 +20,7 @@ import java.math.BigInteger;
 
 public final class UnsignedBase512 {
 
-    private static final BigInteger _512 = BigInteger.valueOf(512);
-    private static final String NUMERALS =
+    public static final String NUMERALS =
         /* U+0030 -> U+0039 */ "0123456789" +
         /* U+0041 -> U+005A */ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
         /* U+0061 -> U+007A */ "abcdefghijklmnopqrstuvwxyz" +
@@ -41,6 +40,7 @@ public final class UnsignedBase512 {
         /* U+022A -> U+0233 */ "ȪȫȬȭȮȯȰȱȲȳ" +
         /* U+0241 -> U+024F */ "ɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏ" +
         /* U+0250 -> U+0295 */ "ɐɑɒɓɔɕɖɗɘəɚɛɜɝɞɟɠɡɢɣɤɥɦɧɨɩɪɫɬɭɮɯɰɱɲɳɴɵɶɷɸɹɺɻɼɽɾɿʀʁʂʃʄʅʆʇʈʉʊʋʌʍʎʏʐʑʒʓʔʕ";
+    private static final BigInteger _512 = BigInteger.valueOf(512);
 
     /* Constructors */
 
