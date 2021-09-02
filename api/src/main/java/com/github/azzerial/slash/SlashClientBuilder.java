@@ -30,7 +30,6 @@ public final class SlashClientBuilder {
 
     private final JDA jda;
     private final CommandRegistry registry;
-
     private final EnumSet<Flag> flags;
 
     /* Constructors */
