@@ -20,11 +20,30 @@ package com.github.azzerial.slash.annotations;
  * This enum represents the type of a Slash Command option.
  */
 public enum OptionType {
-    STRING,
-    INTEGER,
+    STRING(true),
+    INTEGER(true),
     BOOLEAN,
     USER,
     CHANNEL,
     ROLE,
-    MENTIONABLE
+    MENTIONABLE,
+    NUMBER(true);
+
+    private final boolean supportsChoices;
+
+    /* Constructors */
+
+    OptionType() {
+        this(false);
+    }
+
+    OptionType(boolean supportsChoices) {
+        this.supportsChoices = supportsChoices;
+    }
+
+    /* Getters & Setters */
+
+    public boolean canSupportsChoices() {
+        return supportsChoices;
+    }
 }

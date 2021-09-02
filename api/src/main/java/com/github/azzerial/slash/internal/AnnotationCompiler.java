@@ -111,14 +111,14 @@ public final class AnnotationCompiler {
             option.required()
         );
 
-        if (option.type() == com.github.azzerial.slash.annotations.OptionType.STRING
-            || option.type() == com.github.azzerial.slash.annotations.OptionType.INTEGER) {
+        if (option.type().canSupportsChoices()) {
             data.addChoices(
                 Arrays.stream(option.choices())
                     .map(choice -> {
                         switch (option.type()) {
                             case STRING: return new Command.Choice(choice.name(), choice.value());
-                            case INTEGER: return new Command.Choice(choice.name(), Integer.parseInt(choice.value()));
+                            case INTEGER: return new Command.Choice(choice.name(), Long.parseLong(choice.value()));
+                            case NUMBER: return new Command.Choice(choice.name(), Double.parseDouble(choice.value()));
                             default: return null;
                         }
                     })
