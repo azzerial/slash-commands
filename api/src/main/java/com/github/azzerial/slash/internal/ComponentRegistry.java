@@ -16,12 +16,15 @@
 
 package com.github.azzerial.slash.internal;
 
+import com.github.azzerial.slash.annotations.Slash;
 import com.github.azzerial.slash.internal.util.UnsignedBase512;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
+import net.dv8tion.jda.internal.utils.Checks;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public final class ComponentRegistry {
@@ -85,11 +88,10 @@ public final class ComponentRegistry {
 
     /* Methods */
 
-    public void registerComponent(String tag, ComponentCallback callback) {
-        if (!codes.contains(tag)) {
-            codes.add(tag);
-            mappings.put(tag, callback);
-        }
+    public void registerComponent(Object obj) {
+        Checks.notNull(obj, "Obj");
+        registerButtons(obj);
+        registerSelectionMenus(obj);
     }
 
     /* Internal */
@@ -104,5 +106,52 @@ public final class ComponentRegistry {
         return s == null || s.length() <= CODE_LENGTH ?
             null :
             s.substring(CODE_LENGTH);
+    }
+
+    private void registerButtons(Object obj) {
+        final Class<?> cls = obj.getClass();
+
+        Arrays.stream(cls.getDeclaredMethods())
+            .filter(method ->
+                (method.getModifiers() & (Modifier.PROTECTED | Modifier.PRIVATE)) == 0
+                    && method.isAnnotationPresent(Slash.Button.class)
+                    && method.getParameterCount() == 1
+                    && method.getParameterTypes()[0] == ButtonClickEvent.class
+            )
+            .sorted(Comparator.comparing(Method::getName))
+            .forEach(method -> {
+                final String tag = method.getAnnotation(Slash.Button.class).value();
+
+                if (!tag.isEmpty()) {
+                    registerComponentMapping(tag, new ComponentCallback(obj, method));
+                }
+            });
+    }
+
+    private void registerSelectionMenus(Object obj) {
+        final Class<?> cls = obj.getClass();
+
+        Arrays.stream(cls.getDeclaredMethods())
+            .filter(method ->
+                (method.getModifiers() & (Modifier.PROTECTED | Modifier.PRIVATE)) == 0
+                    && method.isAnnotationPresent(Slash.SelectionMenu.class)
+                    && method.getParameterCount() == 1
+                    && method.getParameterTypes()[0] == SelectionMenuEvent.class
+            )
+            .sorted(Comparator.comparing(Method::getName))
+            .forEach(method -> {
+                final String tag = method.getAnnotation(Slash.SelectionMenu.class).value();
+
+                if (!tag.isEmpty()) {
+                    registerComponentMapping(tag, new ComponentCallback(obj, method));
+                }
+            });
+    }
+
+    private void registerComponentMapping(String tag, ComponentCallback callback) {
+        if (!codes.contains(tag)) {
+            codes.add(tag);
+            mappings.put(tag, callback);
+        }
     }
 }
