@@ -28,12 +28,16 @@
 
 ## Features
 
-A few of the things you can do with Slash Commands:
+A few things you can do with the library:
 
 * Create and manage Slash Commands
-* Assign callbacks to Slash Commands events (supports per [command path](https://ci.dv8tion.net/job/JDA/javadoc/net/dv8tion/jda/api/interactions/commands/CommandInteraction.html#getCommandPath()) callbacks)
-* Assign callbacks to buttons
-* Session system for interactions (with session store)
+* Assign callbacks to Slash Commands (supports per [command path](https://ci.dv8tion.net/job/JDA/javadoc/net/dv8tion/jda/api/interactions/commands/CommandInteraction.html#getCommandPath()) and wildcard callbacks)
+* Assign callbacks to message components:
+  * Buttons
+  * Selection Menus
+* Bind data to a message component:
+  * Raw data buffer
+  * Session storage
 
 ## How to Use
 
@@ -48,7 +52,7 @@ public class PingCommand {
     public static void main(String[] args) throws LoginException, InterruptedException {
         final JDA jda = JDABuilder.createDefault(...)
             .build()
-            .awaitReady();
+            .awaitReady(); // wait for JDA to be connected (mandatory)
         final SlashClient slash = SlashClientBuilder.create(jda)
             .addCommand(new PingCommand()) // register the ping command
             .build();
@@ -82,7 +86,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.azzerial.slash-commands:api:1.0'
+    implementation 'com.github.azzerial.slash-commands:api:1.1'
 }
 ```
 
@@ -99,16 +103,17 @@ dependencies {
 <dependency>
     <groupId>com.github.azzerial.slash-commands</groupId>
     <artifactId>api</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
 ## License
 
-This project is licensed under the [Apache License 2.0](LICENSE) © 2021 [Robin Mercier](https://github.com/azzerial/).
+This project is licensed under the [Apache License 2.0](LICENSE) © 2021 [Robin Mercier](https://github.com/Azzerial).
 
 ---
 
 <p align="center">
-  Slash Commands by <a href="https://github.com/azzerial">@Azzerial</a>
+  Slash Commands by <a href="https://github.com/Azzerial">Robin Mercier</a> •
+  <a href="https://www.azzerial.net">azzerial.net</a>
 </p>

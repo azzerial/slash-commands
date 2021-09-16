@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'java-library'
-}
-
-project.version = rootProject.version
-ext.moduleName = 'api'
-archivesBaseName = moduleName
-
-dependencies {
-    implementation jda()
-}
+/**
+ * Implementation module of the Slash Commands library.
+ */
+package net.azzerial.slash.playground;

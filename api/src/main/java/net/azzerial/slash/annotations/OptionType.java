@@ -14,14 +14,36 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'java-library'
-}
+package net.azzerial.slash.annotations;
 
-project.version = rootProject.version
-ext.moduleName = 'api'
-archivesBaseName = moduleName
+/**
+ * This enum represents the type of a Slash Command option.
+ */
+public enum OptionType {
+    STRING(true),
+    INTEGER(true),
+    BOOLEAN,
+    USER,
+    CHANNEL,
+    ROLE,
+    MENTIONABLE,
+    NUMBER(true);
 
-dependencies {
-    implementation jda()
+    private final boolean supportsChoices;
+
+    /* Constructors */
+
+    OptionType() {
+        this(false);
+    }
+
+    OptionType(boolean supportsChoices) {
+        this.supportsChoices = supportsChoices;
+    }
+
+    /* Getters & Setters */
+
+    public boolean canSupportsChoices() {
+        return supportsChoices;
+    }
 }

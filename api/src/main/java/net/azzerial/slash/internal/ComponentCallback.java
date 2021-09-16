@@ -14,14 +14,29 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'java-library'
-}
+package net.azzerial.slash.internal;
 
-project.version = rootProject.version
-ext.moduleName = 'api'
-archivesBaseName = moduleName
+import java.lang.reflect.Method;
 
-dependencies {
-    implementation jda()
+public final class ComponentCallback {
+
+    private final Object obj;
+    private final Method method;
+
+    /* Constructors */
+
+    ComponentCallback(Object obj, Method method) {
+        this.obj = obj;
+        this.method = method;
+    }
+
+    /* Getters & Setters */
+
+    public Object getObjectInstance() {
+        return obj;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
 }

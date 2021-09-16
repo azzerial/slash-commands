@@ -19,6 +19,22 @@ ext.moduleName = 'slash-command'
 allprojects {
     group = 'com.github.azzerial'
     version = '1.0'
+
+    ext {
+        annotationsVersion = '22.0.0'
+        jdaVersion = '4.3.0_313'
+        junitVersion = '5.7.2'
+        logbackVersion = '1.2.3'
+        slf4jVersion = '1.7.32'
+
+        dependencies {
+            annotations = { [group: 'org.jetbrains', name: 'annotations', version: annotationsVersion] }
+            jda = { [group: 'net.dv8tion', name: 'JDA', version: jdaVersion] }
+            logback = { [group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion] }
+            slf4j = { [group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion] }
+            junit = { [group: 'org.junit.jupiter', name: 'junit-jupiter', version: junitVersion] }
+        }
+    }
 }
 
 subprojects {
@@ -30,9 +46,9 @@ subprojects {
     }
 
     dependencies {
-        implementation ('org.jetbrains:annotations:20.1.0')
-        implementation ('org.slf4j:slf4j-api:1.7.3')
-        testImplementation ('org.junit.jupiter:junit-jupiter:5.7.0')
+        implementation annotations()
+        implementation slf4j()
+        testImplementation junit()
     }
 
     java {
