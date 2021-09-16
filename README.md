@@ -86,7 +86,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.azzerial.slash-commands:api:1.0'
+    implementation 'com.github.azzerial.slash-commands:api:1.1'
 }
 ```
 
@@ -103,7 +103,7 @@ dependencies {
 <dependency>
     <groupId>com.github.azzerial.slash-commands</groupId>
     <artifactId>api</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
